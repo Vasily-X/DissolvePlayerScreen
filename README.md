@@ -1,2 +1,2 @@
-# FadePlayerScreen
-An include based on YSI to fade player's screen in SA-MP.
+# DissolvePlayerScreen 
+An include based on YSI and indirection to dissolve player's screen in SA-MP.
