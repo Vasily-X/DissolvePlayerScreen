@@ -12,9 +12,9 @@
 #define DissolvePlayerScreenToBlack(%0,&%1)		DissolvePlayerScreenToBlack(%0,addressof(%1<i>))		
 #define DissolvePlayerScreenToBlank(%0,&%1)		DissolvePlayerScreenToBlank(%0,addressof(%1<i>))		
 
-static d_step[MAX_PLAYERS];
-static d_init_color[MAX_PLAYERS];
-static d_end_color[MAX_PLAYERS];
+static d_step[MAX_PLAYERS char];
+static d_init_color[MAX_PLAYERS char];
+static d_end_color[MAX_PLAYERS char];
 
 static Timer:d_screen_timer[MAX_PLAYERS] 	= 	{Timer:-1, ...};
 static PlayerText:d_screen_td[MAX_PLAYERS] 	= 	{PlayerText:INVALID_TEXT_DRAW, ...};
@@ -27,9 +27,9 @@ hook OnPlayerDisconnect(playerid, reason)
 
 ClearScreenDissolveData(playerid)
 {
-	d_step[playerid] = 0;
-	d_init_color[playerid] = 0;
-	d_end_color[playerid] = 0;
+	d_step{playerid} = 0;
+	d_init_color{playerid} = 0;
+	d_end_color{playerid} = 0;
 
 	if(d_screen_timer[playerid] != Timer:-1)
 	{
@@ -55,8 +55,8 @@ stock DissolvePlayerScreen(playerid, init_color, end_color, Func:response_func<i
 	PlayerTextDrawBoxColor(playerid, d_screen_td[playerid], init_color);
 	PlayerTextDrawShow(playerid, d_screen_td[playerid]);
 
-	d_init_color[playerid] = init_color;
-	d_end_color[playerid] = end_color;
+	d_init_color{playerid} = init_color;
+	d_end_color{playerid} = end_color;
 
 	if(response_func != NO_TRANSITION_RESPONSE)
 	{
@@ -76,18 +76,29 @@ stock DissolvePlayerScreenToBlack(playerid, Func:response_func<i> = NO_TRANSITIO
 	DissolvePlayerScreen(playerid, 0x00000000, 0x000000FF, response_func);
 }
 
+stock IsPlayerScreenDissolving(playerid)
+{
+	if(d_step{playerid} > 0)
+	{
+		return 1;
+	}
+	return 0;
+}
+
 timer update_d_screen_td[70](playerid, Func:response_func<i>)
 {
-	d_step[playerid]++;
+	d_step{playerid}++;
 
 	PlayerTextDrawBoxColor(playerid, d_screen_td[playerid],
-		InterpolateColour(d_init_color[playerid], d_end_color[playerid], d_step[playerid], DISSOLVE_STEPS)
+		InterpolateColour(d_init_color{playerid}, d_end_color{playerid}, d_step{playerid}, DISSOLVE_STEPS)
 	);
 
 	PlayerTextDrawShow(playerid, d_screen_td[playerid]);
 
-	if(d_step[playerid] == DISSOLVE_STEPS)
+	if(d_step{playerid} == DISSOLVE_STEPS)
 	{
+		d_step{playerid} = 0;
+
 		stop d_screen_timer[playerid];
 		d_screen_timer[playerid] = Timer:-1;
 
