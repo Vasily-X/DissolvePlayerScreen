@@ -1,3 +1,8 @@
+#if defined dissolveplayerscreen_included
+	#endinput
+#endif
+#define dissolveplayerscreen_included
+
 #define CUSTOM_TAG_TYPES						F@_@i
 
 #include <indirection>
